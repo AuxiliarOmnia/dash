@@ -1,6 +1,6 @@
 import React,{useState, useEffect, useReducer} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 
 import { Header } from '../header/App.js';
 import { Options } from './components/Options.js';
@@ -12,9 +12,11 @@ import { parserData } from './functions/parserData.js';
 import { DropAno } from './components/dropAno.js';
 import { DropPeriodo } from './components/dropPeriodo.js';
 import { Reducer } from './functions/reducer.js';
-import { Sidebar } from './components/Sidebar.js';
+//import { Sidebar } from './components/Sidebar.js';
+import { Info } from './components/Info.js'
 import { getDb } from '../firebase/getData.js';
-
+import { last } from './functions/lastDay.js';
+import './styles/style.css'
 
 export const Dashboard = (props) => {
 
@@ -26,6 +28,11 @@ export const Dashboard = (props) => {
         ano: 2020,
         mes: 1
     })
+    const [info, setInfo] = useState({
+        entrada: '',
+        saida: '',
+        lucro: ''
+    })
 
     useEffect(() => {
         const update = async() =>  {
@@ -36,74 +43,132 @@ export const Dashboard = (props) => {
                 setStart(false);
             }
             let datas = await getDb(drop)
-            setDash(parserData(datas, translations))
+            let dash_ = parserData(datas, translations)
+            setDash(dash_)
+            setInfo(last(dash_))
         }
         update();
     },[drop, start])
 
+    const Line = () => (
+        <Card id="card">
+            <Card.Body>
+                <LineChart  label={dash.datas} 
+                    line={dash.lucro}
+                    bar1={dash.entrada}   
+                    bar2={dash.saida} 
+                />
+            </Card.Body>
+        </Card>
+    )
+
+    const Faturamento = () => (
+        <Card id="card">
+            <Card.Body>
+                <h6><strong>Faturamento</strong></h6>
+                <PieChartMoney   labels={dash.custo.label} 
+                            value={dash.custo.value}
+                            width="400"
+                        />
+            </Card.Body>
+        </Card>
+    )
+
+    const Operacoes = () => (
+        <Card id="card">
+            <Card.Body>
+                <h6><strong>Operações</strong></h6>
+                <PieChart   labels={dash.lancamento.label} 
+                            value={dash.lancamento.value}
+                            width="400"/>
+            </Card.Body>
+        </Card>
+    )
+
+    const Despesas = () => (
+        <Card id="card">
+            <Card.Body>
+                <h6><strong>Despesas</strong></h6>
+                <PieChartMoney   labels={dash.receita.label} 
+                            value={dash.receita.value}
+                            width="400"/>
+            </Card.Body>
+        </Card>
+    )
+
+    const Entradas = () => (
+        <Card id="card">
+            <Card.Body>
+                <h6><strong>Entradas</strong></h6>
+                <PieChartMoney   labels={dash.credito.label} 
+                            value={dash.credito.value}
+                            width="300"/>
+            </Card.Body>
+        </Card>
+    )
+
+    const Saidas = () => (
+        <Card id="card">
+            <Card.Body>
+                <h6><strong>Saidas</strong></h6>
+                <PieChartMoney   labels={dash.debito.label} 
+                            value={dash.debito.value}
+                            width="300"/>
+            </Card.Body>
+        </Card>
+    )
+
     return( 
         <>
-            <div style={{backgroundColor: "#0b1e35"}}>
-                <Container fluid>
-                    <Row>
-                        <Col md={2}>
-                            <Sidebar empresa={drop.empresa}/>
-                        </Col>
-                        <Col md={10}>
-                            <Header name={"DashBoard"}/>
-                            <Container fluid style={{backgroundColor: "white"}}>
-                                <Row>
-                                    <Col md={12}>
-                                        <Row style={{marginTop: "20px"}}>
-                                            <Col>
-                                                <DropAno action={dispatchDrop} drop={drop}/>
-                                            </Col>
-                                            <Col>
-                                                <DropPeriodo action={dispatchDrop}/>
-                                            </Col>
-                                            <Col>
-                                                <Options periodo={drop.periodo} action={dispatchDrop} value={drop.mes}/>
-                                            </Col>
-                                        </Row>
+            <Header name={"DashBoard"}/>
+            <Container fluid style={{backgroundColor: "#697179"}} >
+                <Card  bg="secondary">
+                    <Card.Body>
+                        <Row>
+                            <Col md={6}>
+                                <Card id="card" >
+                                    <Card.Body>
                                         <Row>
-                                            <Col md={7}>
-                                                <LineChart  label={dash.datas} 
-                                                            line={dash.lucro}
-                                                            bar1={dash.entrada}   
-                                                            bar2={dash.saida} /> 
-                                            </Col>       
-                                            <Col md ={5}>
-                                                <h6><strong>Faturamento</strong></h6>
-                                                <PieChartMoney   labels={dash.custo.label} 
-                                                            value={dash.custo.value}/>
-                                            </Col>
+                                            <Col><DropAno action={dispatchDrop} drop={drop}/></Col>
+                                            <Col><DropPeriodo action={dispatchDrop}/></Col>
+                                            <Col><Options periodo={drop.periodo} action={dispatchDrop} value={drop.mes}/></Col>
                                         </Row>
+                                    </Card.Body>
+                                </Card>
+                                <Line />
+                            </Col>
+                            <Col md={6}>
+                                <Card id="card">
+                                    <Card.Body>
                                         <Row>
-                                            <Col>
-                                                <h6><strong>Operações</strong></h6>
-                                                <PieChart   labels={dash.lancamento.label} 
-                                                            value={dash.lancamento.value}/>
-                                            </Col>
-                                            <Col>
-                                                <h6><strong>Despesas</strong></h6>
-                                                <PieChartMoney   labels={dash.receita.label} 
-                                                            value={dash.receita.value}/>
-                                            </Col>
-                                    
+                                            <Col><Info header={'Entradas'} info={info.entrada} /></Col>
+                                            <Col><Info header={'Saidas'} info={info.saida} /></Col>
+                                            <Col><Info header={'Lucro'} info={info.lucro} /></Col>
                                         </Row>
-                                    </Col>
+                                    </Card.Body>
+                                </Card>
+                                <Row style={{marginTop:"20px"}}>
+                                    <Col><Entradas /></Col>
+                                    <Col><Saidas /></Col>
                                 </Row>
-                            </Container>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-           
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col><Operacoes /></Col>
+                            <Col><Faturamento /></Col>
+                            <Col><Despesas /></Col>
+                        </Row>
+                    </Card.Body>
+                </Card>
+            </Container>
+
         </> 
     )
 }
 
 
 /* 
-
+        <Col md={1}>
+                            <Sidebar empresa={drop.empresa}/>
+                        </Col>
 */

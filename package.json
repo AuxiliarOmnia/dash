@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://AuxiliarOmnia.github.io/dash",
+  "homepage": "https://auxiliaromnia.github.io/",
   "dependencies": {
     "@react-firebase/database": "^0.3.11",
     "@testing-library/jest-dom": "^5.16.2",
@@ -55,6 +55,7 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^3.2.3"
+    "gh-pages": "^3.2.3",
+    "sass": "^1.50.0"
   }
 }

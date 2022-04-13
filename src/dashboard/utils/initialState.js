@@ -11,6 +11,14 @@ export const initialState = {
         label:[],
         value: []
     },
+    credito:{
+        label:[],
+        value:[]
+    },
+    debito:{
+        label:[],
+        value:[]
+    },
     datas:[],
     entrada:[],
     saida:[], 

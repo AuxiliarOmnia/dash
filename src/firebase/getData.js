@@ -16,8 +16,6 @@ export const getDb = async(drop) => {
     }).catch((error) => {
         console.log(error);
     });
-    console.log("ok")
-    console.log(res)
     if (res){
         return res
     }

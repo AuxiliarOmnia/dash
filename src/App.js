@@ -5,12 +5,11 @@ import {
 
 import { Dashboard } from "./dashboard/App";
 import { Menu } from "./menu/main";
-//import { Sidebar } from "./dashboard/components/Sidebar";
 
 export const App = () => {
     return (
         <>
-            <BrowserRouter>
+            <BrowserRouter basename={process.env.PUBLIC_URL}>
                 <Routes>
                     <Route path="/" element={<Menu />} />
                     <Route path="dashboard" element={<Dashboard/>} />

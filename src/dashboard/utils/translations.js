@@ -9,5 +9,10 @@ export const translations = {
 	sem_departamento: "SEM DEPARTAMENTO",
 	marketing_e_vendas: "MARKETING E VENDAS",
 	uso_e_consumo: "USO E CONSUMO",
+	estorno_credito: "ESTORNO",
+	estorno_debito: "ESTORNO",
+	lancamento_credito: "LANCAMENTO ",
+	lancamento_debito: "LANCAMENTO",
+	transferencia_credito: "TRANSFERENCIA",
 	todos: "TODOS"
 }
